@@ -1,4 +1,9 @@
+
 # scxctl
+
+[![crates.io](https://img.shields.io/crates/v/scxctl.svg)](https://crates.io/crates/scxctl)
+[![license](https://img.shields.io/crates/l/scxxtl.svg)](https://crates.io/crates/scxctl)
+
 `scxctl` is a cli interface for interacting with `scx_loader`.
 
 ## Features
