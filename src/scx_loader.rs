@@ -73,7 +73,7 @@ impl<'a> ScxLoader<'a> {
     pub fn start(&self, sched: String, mode: Option<Mode>) -> Result<(String, Mode), Error> {
         let mode = mode.unwrap_or_else(|| self.get_mode().unwrap());
         let new_mode = match mode {
-            Mode::Custom => Mode::Auto,
+            Mode::Unknown => Mode::Auto,
             _ => mode,
         };
         let _: () = self.proxy.method_call(
@@ -84,6 +84,15 @@ impl<'a> ScxLoader<'a> {
         Ok((self.get_sched()?, self.get_mode()?))
     }
 
+    pub fn start_with_args(&self, sched: String, args: Vec<String>) -> Result<(String, Vec<String>), Error> {
+        let _: () = self.proxy.method_call(
+            SERVICE_NAME,
+            ScxMethods::StartSchedulerWithArgs.as_str(),
+            (sched, args.clone()),
+        )?;
+        Ok((self.get_sched()?, args))
+    }
+
     pub fn switch(
         &self,
         sched: Option<String>,
@@ -92,7 +101,7 @@ impl<'a> ScxLoader<'a> {
         let sched = sched.unwrap_or_else(|| self.get_sched().unwrap());
         let mode = mode.unwrap_or_else(|| self.get_mode().unwrap());
         let new_mode = match mode {
-            Mode::Custom => Mode::Auto,
+            Mode::Unknown => Mode::Auto,
             _ => mode,
         };
 
@@ -102,6 +111,15 @@ impl<'a> ScxLoader<'a> {
             (sched, new_mode.as_u32()),
         )?;
         Ok((self.get_sched()?, self.get_mode()?))
+    }
+
+    pub fn switch_with_args(&self, sched: String, args: Vec<String>) -> Result<(String, Vec<String>), Error> {
+        let _: () = self.proxy.method_call(
+            SERVICE_NAME,
+            ScxMethods::SwitchSchedulerWithArgs.as_str(),
+            (sched, args.clone()),
+        )?;
+        Ok((self.get_sched()?, args))
     }
 
     pub fn stop(&self) -> Result<(), Error> {

@@ -23,22 +23,24 @@ enum Commands {
         #[arg(short, long, value_enum)]
         mode: Option<Mode>,
     },
-    /*StartSchedWithArgs {
+    StartWithArgs {
         #[arg(short, long)]
         sched: String,
+        #[arg(short, long)]
         args: Vec<String>,
-    },*/
+    },
     Switch {
         #[arg(short, long)]
         sched: Option<String>,
         #[arg(short, long, value_enum)]
         mode: Option<Mode>,
     },
-    /*SwitchSchedWithArgs {
+    SwitchWithArgs {
         #[arg(short, long)]
         sched: String,
+        #[arg(short, long)]
         args: Vec<String>,
-    },*/
+    },
     Stop,
 }
 
@@ -64,9 +66,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let (sched, mode) = scx_loader.start(sched, mode)?;
             println!("started {} in {} mode", sched, mode.as_str());
         }
+        Commands::StartWithArgs { sched, args } => {
+            let (sched, args) = scx_loader.start_with_args(sched, args)?;
+            println!("started {} with arguments \"{}\"", sched, args.join(" "));
+        }
         Commands::Switch { sched, mode } => {
             let (sched, mode) = scx_loader.switch(sched, mode)?;
             println!("switched to {} in {} mode", sched, mode.as_str());
+        }
+        Commands::SwitchWithArgs { sched, args } => {
+            let (sched, args) = scx_loader.switch_with_args(sched, args)?;
+            println!("switched to {} with arguments \"{}\"", sched, args.join(" "));
         }
         Commands::Stop => {
             scx_loader.stop()?;

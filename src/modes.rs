@@ -7,7 +7,7 @@ pub enum Mode {
     Powersave,
     Lowlatency,
     Server,
-    Custom,
+    Unknown,
 }
 impl Mode {
     pub fn as_str(&self) -> &'static str {
@@ -17,7 +17,7 @@ impl Mode {
             Mode::Powersave => "powersave",
             Mode::Lowlatency => "lowlatency",
             Mode::Server => "server",
-            Mode::Custom => "custom",
+            Mode::Unknown => "unknown",
         }
     }
 
@@ -28,7 +28,7 @@ impl Mode {
             Mode::Powersave => 2,
             Mode::Lowlatency => 3,
             Mode::Server => 4,
-            Mode::Custom => 5,
+            Mode::Unknown => 5,
         }
     }
 
@@ -39,7 +39,7 @@ impl Mode {
             2 => Mode::Powersave,
             3 => Mode::Lowlatency,
             4 => Mode::Server,
-            _ => Mode::Custom,
+            _ => Mode::Unknown,
         }
     }
 }
