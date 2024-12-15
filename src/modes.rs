@@ -7,7 +7,6 @@ pub enum Mode {
     Powersave,
     Lowlatency,
     Server,
-    Unknown,
 }
 impl Mode {
     pub fn as_str(&self) -> &'static str {
@@ -17,7 +16,6 @@ impl Mode {
             Mode::Powersave => "powersave",
             Mode::Lowlatency => "lowlatency",
             Mode::Server => "server",
-            Mode::Unknown => "unknown",
         }
     }
 
@@ -28,18 +26,17 @@ impl Mode {
             Mode::Powersave => 2,
             Mode::Lowlatency => 3,
             Mode::Server => 4,
-            Mode::Unknown => 5,
         }
     }
 
-    pub fn from_u32(u: u32) -> Self {
+    pub fn from_u32(u: u32) -> Option<Self> {
         match u {
-            0 => Mode::Auto,
-            1 => Mode::Gaming,
-            2 => Mode::Powersave,
-            3 => Mode::Lowlatency,
-            4 => Mode::Server,
-            _ => Mode::Unknown,
+            0 => Some(Mode::Auto),
+            1 => Some(Mode::Gaming),
+            2 => Some(Mode::Powersave),
+            3 => Some(Mode::Lowlatency),
+            4 => Some(Mode::Server),
+            _ => None,
         }
     }
 }

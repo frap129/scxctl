@@ -68,23 +68,23 @@ impl<'a> ScxLoader<'a> {
         let raw_mode: u32 = self
             .proxy
             .get(SERVICE_NAME, ScxProperties::SchedulerMode.as_str())?;
-        Ok(Mode::from_u32(raw_mode))
+        Ok(Mode::from_u32(raw_mode).unwrap())
     }
     pub fn start(&self, sched: String, mode: Option<Mode>) -> Result<(String, Mode), Error> {
         let mode = mode.unwrap_or_else(|| self.get_mode().unwrap());
-        let new_mode = match mode {
-            Mode::Unknown => Mode::Auto,
-            _ => mode,
-        };
         let _: () = self.proxy.method_call(
             SERVICE_NAME,
             ScxMethods::StartScheduler.as_str(),
-            (sched, new_mode.as_u32()),
+            (sched, mode.as_u32()),
         )?;
         Ok((self.get_sched()?, self.get_mode()?))
     }
 
-    pub fn start_with_args(&self, sched: String, args: Vec<String>) -> Result<(String, Vec<String>), Error> {
+    pub fn start_with_args(
+        &self,
+        sched: String,
+        args: Vec<String>,
+    ) -> Result<(String, Vec<String>), Error> {
         let _: () = self.proxy.method_call(
             SERVICE_NAME,
             ScxMethods::StartSchedulerWithArgs.as_str(),
@@ -100,20 +100,20 @@ impl<'a> ScxLoader<'a> {
     ) -> Result<(String, Mode), Error> {
         let sched = sched.unwrap_or_else(|| self.get_sched().unwrap());
         let mode = mode.unwrap_or_else(|| self.get_mode().unwrap());
-        let new_mode = match mode {
-            Mode::Unknown => Mode::Auto,
-            _ => mode,
-        };
 
         let _: () = self.proxy.method_call(
             SERVICE_NAME,
             ScxMethods::SwitchScheduler.as_str(),
-            (sched, new_mode.as_u32()),
+            (sched, mode.as_u32()),
         )?;
         Ok((self.get_sched()?, self.get_mode()?))
     }
 
-    pub fn switch_with_args(&self, sched: Option<String>, args: Vec<String>) -> Result<(String, Vec<String>), Error> {
+    pub fn switch_with_args(
+        &self,
+        sched: Option<String>,
+        args: Vec<String>,
+    ) -> Result<(String, Vec<String>), Error> {
         let sched = sched.unwrap_or_else(|| self.get_sched().unwrap());
         let _: () = self.proxy.method_call(
             SERVICE_NAME,
