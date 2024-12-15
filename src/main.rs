@@ -15,24 +15,52 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
+    #[command(about = "Get the current scheduler and mode")]
     Get,
+    #[command(about = "List all supported schedulers")]
     List,
+    #[command(about = "Start a scheduler in a mode or with arguments")]
     Start {
-        #[arg(short, long)]
+        #[arg(short, long, help = "Scheduler to start")]
         sched: String,
-        #[arg(short, long, value_enum, conflicts_with = "args")]
+        #[arg(
+            short,
+            long,
+            value_enum,
+            default_value = "auto",
+            conflicts_with = "args",
+            help = "Mode to start in"
+        )]
         mode: Option<Mode>,
-        #[arg(short, long, conflicts_with = "mode")]
+        #[arg(
+            short,
+            long,
+            conflicts_with = "mode",
+            help = "Arguments to run scheduler with"
+        )]
         args: Option<Vec<String>>,
     },
+    #[command(about = "Switch schedulers or modes, optionally with arguments")]
     Switch {
-        #[arg(short, long)]
+        #[arg(short, long, help = "Scheduler to switch to")]
         sched: Option<String>,
-        #[arg(short, long, value_enum, conflicts_with = "args")]
+        #[arg(
+            short,
+            long,
+            value_enum,
+            conflicts_with = "args",
+            help = "Mode to switch to"
+        )]
         mode: Option<Mode>,
-        #[arg(short, long, conflicts_with = "mode")]
+        #[arg(
+            short,
+            long,
+            conflicts_with = "mode",
+            help = "Arguments to run scheduler with"
+        )]
         args: Option<Vec<String>>,
     },
+    #[command(about = "Stop the current scheduler")]
     Stop,
 }
 
@@ -54,30 +82,30 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let supported_scheds = scx_loader.get_supported_schedulers()?;
             println!("supported schedulers: {:?}", supported_scheds);
         }
-        Commands::Start { sched, mode , args   } => {
-            match args {
-                Some(args) => {
-                    let (sched, args) = scx_loader.start_with_args(sched, args)?;
-                    println!("started {} with arguments \"{}\"", sched, args.join(" "));
-                }
-                None => {
-                    let (sched, mode) = scx_loader.start(sched, mode)?;
-                    println!("started {} in {} mode", sched, mode.as_str());
-                }
+        Commands::Start { sched, mode, args } => match args {
+            Some(args) => {
+                let (sched, args) = scx_loader.start_with_args(sched, args)?;
+                println!("started {} with arguments \"{}\"", sched, args.join(" "));
             }
-        }
-        Commands::Switch { sched, mode, args } => {
-            match args {
-                Some(args) => {
-                    let (sched, args) = scx_loader.switch_with_args(sched, args)?;
-                    println!("switched to {} with arguments \"{}\"", sched, args.join(" "));
-                }
-                None => {
-                    let (sched, mode) = scx_loader.switch(sched, mode)?;
-                    println!("switched to {} in {} mode", sched, mode.as_str());
-                }
+            None => {
+                let (sched, mode) = scx_loader.start(sched, mode)?;
+                println!("started {} in {} mode", sched, mode.as_str());
             }
-        }
+        },
+        Commands::Switch { sched, mode, args } => match args {
+            Some(args) => {
+                let (sched, args) = scx_loader.switch_with_args(sched, args)?;
+                println!(
+                    "switched to {} with arguments \"{}\"",
+                    sched,
+                    args.join(" ")
+                );
+            }
+            None => {
+                let (sched, mode) = scx_loader.switch(sched, mode)?;
+                println!("switched to {} in {} mode", sched, mode.as_str());
+            }
+        },
         Commands::Stop => {
             scx_loader.stop()?;
             println!("stopped");
