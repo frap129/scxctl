@@ -3,7 +3,7 @@ name = "scxctl"
 
 [package]
 name = "scxctl"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "A cli interface for scx_loader"
 authors = ["Joe Maples <joe@maples.dev>"]
