@@ -113,7 +113,8 @@ impl<'a> ScxLoader<'a> {
         Ok((self.get_sched()?, self.get_mode()?))
     }
 
-    pub fn switch_with_args(&self, sched: String, args: Vec<String>) -> Result<(String, Vec<String>), Error> {
+    pub fn switch_with_args(&self, sched: Option<String>, args: Vec<String>) -> Result<(String, Vec<String>), Error> {
+        let sched = sched.unwrap_or_else(|| self.get_sched().unwrap());
         let _: () = self.proxy.method_call(
             SERVICE_NAME,
             ScxMethods::SwitchSchedulerWithArgs.as_str(),

@@ -20,26 +20,18 @@ enum Commands {
     Start {
         #[arg(short, long)]
         sched: String,
-        #[arg(short, long, value_enum)]
+        #[arg(short, long, value_enum, conflicts_with = "args")]
         mode: Option<Mode>,
-    },
-    StartWithArgs {
-        #[arg(short, long)]
-        sched: String,
-        #[arg(short, long)]
-        args: Vec<String>,
+        #[arg(short, long, conflicts_with = "mode")]
+        args: Option<Vec<String>>,
     },
     Switch {
         #[arg(short, long)]
         sched: Option<String>,
-        #[arg(short, long, value_enum)]
+        #[arg(short, long, value_enum, conflicts_with = "args")]
         mode: Option<Mode>,
-    },
-    SwitchWithArgs {
-        #[arg(short, long)]
-        sched: String,
-        #[arg(short, long)]
-        args: Vec<String>,
+        #[arg(short, long, conflicts_with = "mode")]
+        args: Option<Vec<String>>,
     },
     Stop,
 }
@@ -62,21 +54,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let supported_scheds = scx_loader.get_supported_schedulers()?;
             println!("supported schedulers: {:?}", supported_scheds);
         }
-        Commands::Start { sched, mode } => {
-            let (sched, mode) = scx_loader.start(sched, mode)?;
-            println!("started {} in {} mode", sched, mode.as_str());
+        Commands::Start { sched, mode , args   } => {
+            match args {
+                Some(args) => {
+                    let (sched, args) = scx_loader.start_with_args(sched, args)?;
+                    println!("started {} with arguments \"{}\"", sched, args.join(" "));
+                }
+                None => {
+                    let (sched, mode) = scx_loader.start(sched, mode)?;
+                    println!("started {} in {} mode", sched, mode.as_str());
+                }
+            }
         }
-        Commands::StartWithArgs { sched, args } => {
-            let (sched, args) = scx_loader.start_with_args(sched, args)?;
-            println!("started {} with arguments \"{}\"", sched, args.join(" "));
-        }
-        Commands::Switch { sched, mode } => {
-            let (sched, mode) = scx_loader.switch(sched, mode)?;
-            println!("switched to {} in {} mode", sched, mode.as_str());
-        }
-        Commands::SwitchWithArgs { sched, args } => {
-            let (sched, args) = scx_loader.switch_with_args(sched, args)?;
-            println!("switched to {} with arguments \"{}\"", sched, args.join(" "));
+        Commands::Switch { sched, mode, args } => {
+            match args {
+                Some(args) => {
+                    let (sched, args) = scx_loader.switch_with_args(sched, args)?;
+                    println!("switched to {} with arguments \"{}\"", sched, args.join(" "));
+                }
+                None => {
+                    let (sched, mode) = scx_loader.switch(sched, mode)?;
+                    println!("switched to {} in {} mode", sched, mode.as_str());
+                }
+            }
         }
         Commands::Stop => {
             scx_loader.stop()?;
