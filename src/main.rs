@@ -35,6 +35,7 @@ enum Commands {
         #[arg(
             short,
             long,
+            value_delimiter(','),
             conflicts_with = "mode",
             help = "Arguments to run scheduler with"
         )]
@@ -55,6 +56,7 @@ enum Commands {
         #[arg(
             short,
             long,
+            value_delimiter(','),
             conflicts_with = "mode",
             help = "Arguments to run scheduler with"
         )]
