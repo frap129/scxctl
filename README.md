@@ -14,9 +14,7 @@
 - Stop the running scheduler
 
 ## Installation
-1. Clone this repo
-2. `cd` into the repo
-3. `cargo install --path .`
+`cargo install scxctl`
 
 ## Usage
 ```
