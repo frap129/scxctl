@@ -2,7 +2,14 @@
 name = "scxctl"
 version = "0.1.0"
 edition = "2021"
-
+description = "A cli interface for scx_loader"
+authors = ["Joe Maples <joe@maples.dev>"]
+homepage = "https://github.com/frap129/scxctl"
+repository = "https://github.com/frap129/scxctl"
+readme = "README.md"
+keywords = ["linux", "scx", "scx_scheds", "scx_loader"]
+categories = ["command-line-utilities"]
+license = "Apache-2.0 OR MIT"
 
 [dependencies]
 clap = { version = "4.5.23", features = ["derive"] }
