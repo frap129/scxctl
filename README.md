@@ -14,7 +14,15 @@
 - Stop the running scheduler
 
 ## Installation
-`cargo install scxctl`
+
+### Arch Linux
+`scxctl` is available on the AUR as [scxctl](https://aur.archlinux.org/packages/scxctl) 
+
+### Other Distros
+`scxctl` can be installed from crates.io through cargo
+```
+cargo install scxctl
+```
 
 ## Usage
 ```
