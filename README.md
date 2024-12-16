@@ -63,7 +63,7 @@ Options:
 ### Examples:
 Start bpfland in auto mode
 ```
-scxctl start -s scx_bpfland
+scxctl start -s bpfland
 ```
 
 Switch to gaming mode
@@ -73,5 +73,5 @@ scxctl switch -m gaming
 
 Switch to lavd with verbose and performance flags
 ```
-scxctl switch -s scx_lavd -a="-v,--performance"
+scxctl switch -s lavd -a="-v,--performance"
 ```

@@ -4,6 +4,7 @@ use dbus::blocking::{Connection, Proxy};
 use dbus::Error;
 use std::time::Duration;
 
+const SCHED_PREFIX: &str = "scx_";
 const SERVICE_NAME: &str = "org.scx.Loader";
 const OBJECT_PATH: &str = "/org/scx/Loader";
 
@@ -43,6 +44,20 @@ impl ScxMethods {
     }
 }
 
+fn ensure_scx_prefix(input: String) -> String {
+    if !input.starts_with(SCHED_PREFIX) {
+        return format!("{}{}", SCHED_PREFIX, input);
+    }
+    input
+}
+
+fn remove_scx_prefix(input: String) -> String {
+    if input.starts_with(SCHED_PREFIX) {
+        return input[SCHED_PREFIX.len()..].to_string();
+    }
+    input
+}
+
 pub struct ScxLoader<'a> {
     proxy: Proxy<'a, &'a Connection>,
 }
@@ -55,13 +70,20 @@ impl<'a> ScxLoader<'a> {
     }
 
     pub fn get_supported_schedulers(&self) -> Result<Vec<String>, Error> {
-        self.proxy
-            .get(SERVICE_NAME, ScxProperties::SupportedSchedulers.as_str())
+        let supported_scheds: Vec<String> = self
+            .proxy
+            .get(SERVICE_NAME, ScxProperties::SupportedSchedulers.as_str())?;
+        Ok(supported_scheds
+            .into_iter()
+            .map(|s| remove_scx_prefix(s))
+            .collect())
     }
 
     pub fn get_sched(&self) -> Result<String, Error> {
-        self.proxy
-            .get(SERVICE_NAME, ScxProperties::CurrentScheduler.as_str())
+        let current_sched = self
+            .proxy
+            .get(SERVICE_NAME, ScxProperties::CurrentScheduler.as_str())?;
+        Ok(remove_scx_prefix(current_sched))
     }
 
     pub fn get_mode(&self) -> Result<Mode, Error> {
@@ -75,9 +97,9 @@ impl<'a> ScxLoader<'a> {
         let _: () = self.proxy.method_call(
             SERVICE_NAME,
             ScxMethods::StartScheduler.as_str(),
-            (sched, mode.as_u32()),
+            (ensure_scx_prefix(sched), mode.as_u32()),
         )?;
-        Ok((self.get_sched()?, self.get_mode()?))
+        Ok((remove_scx_prefix(self.get_sched()?), self.get_mode()?))
     }
 
     pub fn start_with_args(
@@ -88,9 +110,9 @@ impl<'a> ScxLoader<'a> {
         let _: () = self.proxy.method_call(
             SERVICE_NAME,
             ScxMethods::StartSchedulerWithArgs.as_str(),
-            (sched, args.clone()),
+            (ensure_scx_prefix(sched), args.clone()),
         )?;
-        Ok((self.get_sched()?, args))
+        Ok((remove_scx_prefix(self.get_sched()?), args))
     }
 
     pub fn switch(
@@ -104,9 +126,9 @@ impl<'a> ScxLoader<'a> {
         let _: () = self.proxy.method_call(
             SERVICE_NAME,
             ScxMethods::SwitchScheduler.as_str(),
-            (sched, mode.as_u32()),
+            (ensure_scx_prefix(sched), mode.as_u32()),
         )?;
-        Ok((self.get_sched()?, self.get_mode()?))
+        Ok((remove_scx_prefix(self.get_sched()?), self.get_mode()?))
     }
 
     pub fn switch_with_args(
@@ -118,9 +140,9 @@ impl<'a> ScxLoader<'a> {
         let _: () = self.proxy.method_call(
             SERVICE_NAME,
             ScxMethods::SwitchSchedulerWithArgs.as_str(),
-            (sched, args.clone()),
+            (ensure_scx_prefix(sched), args.clone()),
         )?;
-        Ok((self.get_sched()?, args))
+        Ok((remove_scx_prefix(self.get_sched()?), args))
     }
 
     pub fn stop(&self) -> Result<(), Error> {
