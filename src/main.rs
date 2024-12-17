@@ -1,12 +1,10 @@
 mod cli;
-mod modes;
 mod scx_loader;
 
 use clap::Parser;
 use cli::{Cli, Commands};
 use dbus::blocking::Connection;
-use modes::Mode;
-use scx_loader::ScxLoader;
+use scx_loader::{ScxLoaderMode, ScxLoader};
 
 fn cmd_get(scx_loader: ScxLoader) -> Result<(), Box<dyn std::error::Error>> {
     let current_scheduler: String = scx_loader.get_sched()?;
@@ -27,7 +25,7 @@ fn cmd_list(scx_loader: ScxLoader) -> Result<(), Box<dyn std::error::Error>> {
 fn cmd_start(
     scx_loader: ScxLoader,
     sched: String,
-    mode: Option<Mode>,
+    mode: Option<ScxLoaderMode>,
     args: Option<Vec<String>>,
 ) -> Result<(), Box<dyn std::error::Error>> {
     match args {
@@ -46,7 +44,7 @@ fn cmd_start(
 fn cmd_switch(
     scx_loader: ScxLoader,
     sched: Option<String>,
-    mode: Option<Mode>,
+    mode: Option<ScxLoaderMode>,
     args: Option<Vec<String>>,
 ) -> Result<(), Box<dyn std::error::Error>> {
     match args {
