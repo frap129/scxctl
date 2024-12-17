@@ -80,8 +80,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     match cli.command {
         Commands::Get => cmd_get(scx_loader)?,
         Commands::List => cmd_list(scx_loader)?,
-        Commands::Start { sched, mode, args } => cmd_start(scx_loader, sched, mode, args)?,
-        Commands::Switch { sched, mode, args } => cmd_switch(scx_loader, sched, mode, args)?,
+        Commands::Start { args } => cmd_start(scx_loader, args.sched, args.mode, args.args)?,
+        Commands::Switch { args } => cmd_switch(scx_loader, args.sched, args.mode, args.args)?,
         Commands::Stop => cmd_stop(scx_loader)?,
     }
 
