@@ -42,7 +42,7 @@ fn cmd_start(
         exit(1);
     }
 
-    let sched = ensure_scx_prefix(sched);
+    let sched = validate_sched(scx_loader.clone(), sched);
     let mode = mode.unwrap_or_else(|| ScxLoaderMode::Auto);
     match args {
         Some(args) => {
@@ -70,7 +70,7 @@ fn cmd_switch(
     }
 
     let sched = match sched {
-        Some(sched) => ensure_scx_prefix(sched),
+        Some(sched) => validate_sched(scx_loader.clone(), sched),
         None => scx_loader.current_scheduler().unwrap(),
     };
     let mode = match mode {
@@ -134,4 +134,20 @@ fn remove_scx_prefix(input: &String) -> String {
         return input[SCHED_PREFIX.len()..].to_string();
     }
     input.to_string()
+}
+
+fn validate_sched(scx_loader: ScxLoaderProxyBlocking, sched: String) -> String {
+    let supported_scheds: Vec<String> = scx_loader
+        .supported_schedulers()
+        .unwrap()
+        .iter()
+        .map(|s| remove_scx_prefix(s))
+        .collect();
+    if !supported_scheds.contains(&sched) {
+        println!("{} is not valid", &sched);
+        println!("supported schedulers: {:?}", supported_scheds);
+        exit(1);
+    }
+
+    ensure_scx_prefix(sched)
 }
