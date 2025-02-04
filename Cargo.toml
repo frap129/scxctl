@@ -3,7 +3,7 @@ name = "scxctl"
 
 [package]
 name = "scxctl"
-version = "0.3.2"
+version = "0.3.3"
 edition = "2021"
 description = "A cli interface for scx_loader"
 authors = ["Joe Maples <joe@maples.dev>"]
@@ -19,4 +19,5 @@ lto = true
 
 [dependencies]
 clap = { version = "4.5.28", features = ["derive"] }
+colored = "3.0.0"
 zbus = "5.3.1"

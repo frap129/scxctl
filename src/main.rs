@@ -4,6 +4,7 @@ mod scx_loader;
 use crate::scx_loader::{ScxLoaderMode, ScxLoaderProxyBlocking};
 use clap::Parser;
 use cli::{Cli, Commands};
+use colored::Colorize;
 use std::process::exit;
 use zbus::blocking::Connection;
 
@@ -38,7 +39,13 @@ fn cmd_start(
 ) -> Result<(), Box<dyn std::error::Error>> {
     // Verify scx_loader is not running a scheduler
     if scx_loader.current_scheduler().unwrap() != "unknown" {
-        println!("scx scheduler already running, use switch instead of start");
+        println!(
+            "{} scx scheduler already running, use '{}' instead of '{}'",
+            "error:".red().bold(),
+            "switch".bold(),
+            "start".bold()
+        );
+        println!("\nFor more information, try '{}'", "--help".bold());
         exit(1);
     }
 
@@ -65,7 +72,13 @@ fn cmd_switch(
 ) -> Result<(), Box<dyn std::error::Error>> {
     // Verify scx_loader is running a scheduler
     if scx_loader.current_scheduler().unwrap() == "unknown" {
-        println!("no scx scheduler running, use start instead of switch");
+        println!(
+            "{} no scx scheduler running, use '{}' instead of '{}'",
+            "error:".red().bold(),
+            "start".bold(),
+            "switch".bold()
+        );
+        println!("\nFor more information, try '{}'", "--help".bold());
         exit(1);
     }
 
@@ -144,8 +157,14 @@ fn validate_sched(scx_loader: ScxLoaderProxyBlocking, sched: String) -> String {
         .map(|s| remove_scx_prefix(s))
         .collect();
     if !supported_scheds.contains(&sched) {
-        println!("{} is not valid", &sched);
+        println!(
+            "{} invalid value '{}' for '{}'",
+            "error:".red().bold(),
+            &sched.yellow(),
+            "--sched <SCHED>".bold()
+        );
         println!("supported schedulers: {:?}", supported_scheds);
+        println!("\nFor more information, try '{}'", "--help".bold());
         exit(1);
     }
 
