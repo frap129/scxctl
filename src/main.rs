@@ -4,6 +4,7 @@ mod scx_loader;
 use crate::scx_loader::{ScxLoaderMode, ScxLoaderProxyBlocking};
 use clap::Parser;
 use cli::{Cli, Commands};
+use std::process::exit;
 use zbus::blocking::Connection;
 
 fn cmd_get(scx_loader: ScxLoaderProxyBlocking) -> Result<(), Box<dyn std::error::Error>> {
@@ -56,6 +57,12 @@ fn cmd_switch(
     mode: Option<ScxLoaderMode>,
     args: Option<Vec<String>>,
 ) -> Result<(), Box<dyn std::error::Error>> {
+    // Verify scx_loader is running
+    if scx_loader.current_scheduler().unwrap() == "unknown" {
+        println!("no scx scheduler running, start one before trying to switch");
+        exit(1);
+    }
+
     let sched = match sched {
         Some(sched) => ensure_scx_prefix(sched),
         None => scx_loader.current_scheduler().unwrap(),
