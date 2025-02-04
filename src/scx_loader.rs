@@ -48,7 +48,7 @@ pub trait ScxLoader {
 }
 
 /*
- * D-bus client implementation
+ * Type Helpers
  */
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
