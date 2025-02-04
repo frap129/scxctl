@@ -150,13 +150,12 @@ fn remove_scx_prefix(input: &String) -> String {
 }
 
 fn validate_sched(scx_loader: ScxLoaderProxyBlocking, sched: String) -> String {
-    let supported_scheds: Vec<String> = scx_loader
-        .supported_schedulers()
-        .unwrap()
+    let raw_supported_scheds: Vec<String> = scx_loader.supported_schedulers().unwrap();
+    let supported_scheds: Vec<String> = raw_supported_scheds
         .iter()
         .map(|s| remove_scx_prefix(s))
         .collect();
-    if !supported_scheds.contains(&sched) {
+    if !supported_scheds.contains(&sched) && !raw_supported_scheds.contains(&sched) {
         println!(
             "{} invalid value '{}' for '{}'",
             "error:".red().bold(),
