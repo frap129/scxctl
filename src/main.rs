@@ -36,6 +36,12 @@ fn cmd_start(
     mode: Option<ScxLoaderMode>,
     args: Option<Vec<String>>,
 ) -> Result<(), Box<dyn std::error::Error>> {
+    // Verify scx_loader is not running a scheduler
+    if scx_loader.current_scheduler().unwrap() != "unknown" {
+        println!("scx scheduler already running, use switch instead of start");
+        exit(1);
+    }
+
     let sched = ensure_scx_prefix(sched);
     let mode = mode.unwrap_or_else(|| ScxLoaderMode::Auto);
     match args {
@@ -57,9 +63,9 @@ fn cmd_switch(
     mode: Option<ScxLoaderMode>,
     args: Option<Vec<String>>,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    // Verify scx_loader is running
+    // Verify scx_loader is running a scheduler
     if scx_loader.current_scheduler().unwrap() == "unknown" {
-        println!("no scx scheduler running, start one before trying to switch");
+        println!("no scx scheduler running, use start instead of switch");
         exit(1);
     }
 
