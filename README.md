@@ -4,6 +4,10 @@
 [![crates.io](https://img.shields.io/crates/v/scxctl.svg)](https://crates.io/crates/scxctl)
 [![license](https://img.shields.io/crates/l/scxctl.svg)](https://crates.io/crates/scxctl)
 
+> [!WARNING]
+> **This repo is DEPRECATED**
+> scxctl is now a part of the official [sched-ext/scx repo](https://github.com/sched-ext/scx/tree/main/tools/scxctl)
+
 `scxctl` is a cli interface for interacting with `scx_loader`.
 
 ## Features
@@ -16,7 +20,9 @@
 ## Installation
 
 ### Arch Linux
-`scxctl` is available on the AUR as [scxctl](https://aur.archlinux.org/packages/scxctl) 
+~`scxctl` is available on the AUR as [scxctl](https://aur.archlinux.org/packages/scxctl)~
+> [!WARNING]
+> scxctl is included in the official scx-scheds package for versions after 1.0.10
 
 ### Other Distros
 `scxctl` can be installed from crates.io through cargo
